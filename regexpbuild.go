@@ -49,44 +49,44 @@ func Literal(s string) Builder {
 	})}
 }
 
-func ZeroOrMore(a Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s*", a.Build())}
+func ZeroOrMore(b Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s*", b.Build())}
 }
 
-func OneOrMore(a Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s+", a.Build())}
+func OneOrMore(b Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s+", b.Build())}
 }
 
-func ZeroOrOne(a Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s?", a.Build())}
+func ZeroOrOne(b Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s?", b.Build())}
 }
 
-func MinToMax(a Builder, min, max int) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s{%d,%d}", a.Build(), min, max)}
+func MinToMax(b Builder, min, max int) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s{%d,%d}", b.Build(), min, max)}
 }
 
-func ZeroOrMoreLazy(a Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s?", ZeroOrMore(a).Build())}
+func ZeroOrMoreLazy(b Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s?", ZeroOrMore(b).Build())}
 }
 
-func OneOrMoreLazy(a Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s?", OneOrMore(a).Build())}
+func OneOrMoreLazy(b Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s?", OneOrMore(b).Build())}
 }
 
-func ZeroOrOneLazy(a Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s?", ZeroOrOne(a).Build())}
+func ZeroOrOneLazy(b Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s?", ZeroOrOne(b).Build())}
 }
 
-func MinToMaxLazy(a Builder, min, max int) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s?", MinToMax(a, min, max).Build())}
+func MinToMaxLazy(b Builder, min, max int) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s?", MinToMax(b, min, max).Build())}
 }
 
-func Group(s Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("(?:%s)", s.Build())}
+func Group(b Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("(?:%s)", b.Build())}
 }
 
-func CapturingGroup(s Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("(%s)", s.Build())}
+func CapturingGroup(b Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("(%s)", b.Build())}
 }
 
 func WordBoundary() Builder {
