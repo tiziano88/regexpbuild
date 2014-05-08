@@ -7,14 +7,14 @@ import (
 )
 
 type Builder interface {
-	build() string
+	Build() string
 }
 
 type SimpleBuilder struct {
 	a string
 }
 
-func (b SimpleBuilder) build() string {
+func (b SimpleBuilder) Build() string {
 	return b.a
 }
 
@@ -50,43 +50,43 @@ func Literal(s string) Builder {
 }
 
 func ZeroOrMore(a Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s*", a.build())}
+	return SimpleBuilder{fmt.Sprintf("%s*", a.Build())}
 }
 
 func OneOrMore(a Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s+", a.build())}
+	return SimpleBuilder{fmt.Sprintf("%s+", a.Build())}
 }
 
 func ZeroOrOne(a Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s?", a.build())}
+	return SimpleBuilder{fmt.Sprintf("%s?", a.Build())}
 }
 
 func MinToMax(a Builder, min, max int) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s{%d,%d}", a.build(), min, max)}
+	return SimpleBuilder{fmt.Sprintf("%s{%d,%d}", a.Build(), min, max)}
 }
 
 func ZeroOrMoreLazy(a Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s?", ZeroOrMore(a).build())}
+	return SimpleBuilder{fmt.Sprintf("%s?", ZeroOrMore(a).Build())}
 }
 
 func OneOrMoreLazy(a Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s?", OneOrMore(a).build())}
+	return SimpleBuilder{fmt.Sprintf("%s?", OneOrMore(a).Build())}
 }
 
 func ZeroOrOneLazy(a Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s?", ZeroOrOne(a).build())}
+	return SimpleBuilder{fmt.Sprintf("%s?", ZeroOrOne(a).Build())}
 }
 
 func MinToMaxLazy(a Builder, min, max int) Builder {
-	return SimpleBuilder{fmt.Sprintf("%s?", MinToMax(a, min, max).build())}
+	return SimpleBuilder{fmt.Sprintf("%s?", MinToMax(a, min, max).Build())}
 }
 
 func Group(s Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("(?:%s)", s.build())}
+	return SimpleBuilder{fmt.Sprintf("(?:%s)", s.Build())}
 }
 
 func CapturingGroup(s Builder) Builder {
-	return SimpleBuilder{fmt.Sprintf("(%s)", s.build())}
+	return SimpleBuilder{fmt.Sprintf("(%s)", s.Build())}
 }
 
 func WordBoundary() Builder {
@@ -104,7 +104,7 @@ func EndOfLine() Builder {
 func Or(bb ...Builder) Builder {
 	ss := make([]string, len(bb))
 	for i := range bb {
-		ss[i] = bb[i].build()
+		ss[i] = bb[i].Build()
 	}
 
 	return SimpleBuilder{strings.Join(ss, "|")}
@@ -113,7 +113,7 @@ func Or(bb ...Builder) Builder {
 func Sequence(bb ...Builder) Builder {
 	ss := make([]string, len(bb))
 	for i := range bb {
-		ss[i] = bb[i].build()
+		ss[i] = bb[i].Build()
 	}
 
 	return SimpleBuilder{strings.Join(ss, "")}
