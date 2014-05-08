@@ -10,8 +10,8 @@ type testPair struct {
 }
 
 var tests = []testPair{
-	{MinToMax(Digit(), 3, 10), `\d{3,10}`},
-	{Literal("www.google.com"), `www\.google\.com`},
+	{MinToMax(Whitespace(), 3, 10).build(), `\s{3,10}`},
+	{Literal("www.google.com").build(), `www\.google\.com`},
 }
 
 func TestRegexp(t *testing.T) {

@@ -6,89 +6,115 @@ import (
 	"strings"
 )
 
-func Digit() string {
-	return "\\d"
+type Builder interface {
+	build() string
 }
 
-func NotDigit() string {
-	return "\\D"
+type SimpleBuilder struct {
+	a string
 }
 
-func Whitespace() string {
-	return "\\s"
+func (b SimpleBuilder) build() string {
+	return b.a
 }
 
-func NotWhitespace() string {
-	return "\\S"
+func Digit() Builder {
+	return SimpleBuilder{`\d`}
 }
 
-func WordCharacter() string {
-	return "\\w"
+func NotDigit() Builder {
+	return SimpleBuilder{`\D`}
 }
 
-func NotWordCharacter() string {
-	return "\\W"
+func Whitespace() Builder {
+	return SimpleBuilder{`\s`}
 }
 
-func Literal(s string) string {
+func NotWhitespace() Builder {
+	return SimpleBuilder{`\S`}
+}
+
+func WordCharacter() Builder {
+	return SimpleBuilder{`\w`}
+}
+
+func NotWordCharacter() Builder {
+	return SimpleBuilder{`\W`}
+}
+
+func Literal(s string) Builder {
 	re := regexp.MustCompile("[!-/:-@[-`{-~]")
-	return re.ReplaceAllStringFunc(s, func(in string) string {
-		return "\\" + in
-	})
+	return SimpleBuilder{re.ReplaceAllStringFunc(s, func(in string) string {
+		return `\` + in
+	})}
 }
 
-func ZeroOrMore(a string) string {
-	return fmt.Sprintf("%s*", a)
+func ZeroOrMore(a Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s*", a.build())}
 }
 
-func OneOrMore(a string) string {
-	return fmt.Sprintf("%s+", a)
+func OneOrMore(a Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s+", a.build())}
 }
 
-func ZeroOrOne(a string) string {
-	return fmt.Sprintf("%s?", a)
+func ZeroOrOne(a Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s?", a.build())}
 }
 
-func MinToMax(a string, min, max int) string {
-	return fmt.Sprintf("%s{%d,%d}", a, min, max)
+func MinToMax(a Builder, min, max int) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s{%d,%d}", a.build(), min, max)}
 }
 
-func ZeroOrMoreLazy(a string) string {
-	return fmt.Sprintf("%s?", ZeroOrMore(a))
+func ZeroOrMoreLazy(a Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s?", ZeroOrMore(a).build())}
 }
 
-func OneOrMoreLazy(a string) string {
-	return fmt.Sprintf("%s?", OneOrMore(a))
+func OneOrMoreLazy(a Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s?", OneOrMore(a).build())}
 }
 
-func ZeroOrOneLazy(a string) string {
-	return fmt.Sprintf("%s?", ZeroOrOne(a))
+func ZeroOrOneLazy(a Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s?", ZeroOrOne(a).build())}
 }
 
-func MinToMaxLazy(a string, min, max int) string {
-	return fmt.Sprintf("%s?", MinToMax(a, min, max))
+func MinToMaxLazy(a Builder, min, max int) Builder {
+	return SimpleBuilder{fmt.Sprintf("%s?", MinToMax(a, min, max).build())}
 }
 
-func Group(s string) string {
-	return fmt.Sprintf("(?:%s)", s)
+func Group(s Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("(?:%s)", s.build())}
 }
 
-func CapturingGroup(s string) string {
-	return fmt.Sprintf("(%s)", s)
+func CapturingGroup(s Builder) Builder {
+	return SimpleBuilder{fmt.Sprintf("(%s)", s.build())}
 }
 
-func WordBoundary() string {
-	return "\\b"
+func WordBoundary() Builder {
+	return SimpleBuilder{`\b`}
 }
 
-func BeginningOfLine() string {
-	return "^"
+func BeginningOfLine() Builder {
+	return SimpleBuilder{"^"}
 }
 
-func EndOfLine() string {
-	return "$"
+func EndOfLine() Builder {
+	return SimpleBuilder{"$"}
 }
 
-func Or(ss ...string) string {
-	return strings.Join(ss, "|")
+func Or(bb ...Builder) Builder {
+	ss := make([]string, len(bb))
+	for i := range bb {
+		ss[i] = bb[i].build()
+	}
+
+	return SimpleBuilder{strings.Join(ss, "|")}
+}
+
+func Sequence(bb ...Builder) Builder {
+	ss := make([]string, len(bb))
+	for i := range bb {
+		ss[i] = bb[i].build()
+	}
+
+	return SimpleBuilder{strings.Join(ss, "")}
 }
